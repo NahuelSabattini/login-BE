@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @Schema()
 export class User {
@@ -20,8 +21,8 @@ export class User {
   @Prop({ default: true })
   isActive: boolean;
 
-  @Prop({ required: true })
-  applicationId: string;
+  @Prop({ type: Types.ObjectId, ref: 'Application', required: true })
+  applicationId: Types.ObjectId;
 
   @Prop({ default: 'user' })
   role: string;

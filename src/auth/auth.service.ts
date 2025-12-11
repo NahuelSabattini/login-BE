@@ -8,14 +8,12 @@ import { UsersService } from '../users/users.service';
 import { matchPassword } from 'src/utils/bcrypt';
 import { AUTH_MESSAGES } from './utils/constants';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private configService: ConfigService,
   ) {}
 
   async authenticate(authUserDto: AuthUserDto) {
@@ -41,6 +39,7 @@ export class AuthService {
     };
 
     return {
+      redirectUrl: user.applicationId.url,
       access_token: await this.jwtService.signAsync(payload),
     };
   }

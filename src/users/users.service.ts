@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ERROR_MESSAGES } from './utils/constants';
 import { hashPassword } from 'src/utils/bcrypt';
+import { UserWithApplication } from './utils/types';
 
 @Injectable()
 export class UsersService {
@@ -37,8 +38,10 @@ export class UsersService {
   }
 
   async findUserByEmailOrUserName(email: string, userName: string) {
-    return await this.userModel.findOne({
-      $or: [{ email: email }, { userName: userName }],
-    });
+    return (await this.userModel
+      .findOne({
+        $or: [{ email: email }, { userName: userName }],
+      })
+      .populate('applicationId')) as UserWithApplication | null;
   }
 }
