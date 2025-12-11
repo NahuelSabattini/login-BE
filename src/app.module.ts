@@ -3,11 +3,13 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configurationMongo } from './configuration/configuration-mongo';
+import { AuthModule } from './auth/auth.module';
+import { configurationJwt } from './configuration/configuration-jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configurationMongo],
+      load: [configurationMongo, configurationJwt],
       envFilePath: `./env/${process.env.NODE_ENV}.env`,
       isGlobal: true,
     }),
@@ -19,6 +21,7 @@ import { configurationMongo } from './configuration/configuration-mongo';
       }),
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
