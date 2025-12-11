@@ -14,5 +14,8 @@ export class CreateUserDto {
   public userName: string;
 
   @IsString()
+  public password: string;
+
+  @IsString()
   public applicationId: string;
 }

@@ -1,9 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+// import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schemas';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { hashPassword } from './utils/functions';
 
 @Injectable()
 export class UsersService {
@@ -16,11 +17,26 @@ export class UsersService {
 
     if (existUser) throw new ConflictException('El usuario ya existe');
 
+    createUserDto.password = await hashPassword(createUserDto.password);
     const createUser = new this.userModel(createUserDto);
 
     return createUser.save();
   }
 
+  async validateUser(email: string, userName: string) {
+    const userByEmail = await this.userModel.exists({ email: email });
+    if (userByEmail) throw new ConflictException('El email ya está en uso');
+
+    const userByUserName = await this.userModel.exists({ userName: userName });
+
+    if (userByUserName)
+      throw new ConflictException('El nombre de usuario ya está en uso');
+
+    return;
+  }
+
+  /*
+  Para backoffice
   findAll() {
     return `This action returns all users`;
   }
@@ -36,4 +52,5 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+    */
 }

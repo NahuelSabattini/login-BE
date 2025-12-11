@@ -1,15 +1,20 @@
 import {
   Controller,
-  Get,
+  // Get,
   Post,
   Body,
-  Patch,
+  Get,
   Param,
-  Delete,
+  Query,
+  HttpCode,
+  HttpStatus,
+  // Patch,
+  // Param,
+  // Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+// import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -20,6 +25,16 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Get('validateUser')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  validateUser(
+    @Query('email') email: string,
+    @Query('userName') userName: string,
+  ) {
+    return this.usersService.validateUser(email, userName);
+  }
+
+  /*
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -39,4 +54,5 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+    */
 }
