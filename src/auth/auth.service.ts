@@ -8,12 +8,14 @@ import { UsersService } from '../users/users.service';
 import { matchPassword } from 'src/utils/bcrypt';
 import { AUTH_MESSAGES } from './utils/constants';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async authenticate(authUserDto: AuthUserDto) {
@@ -42,5 +44,16 @@ export class AuthService {
       redirectUrl: user.applicationId.url,
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async validateToken(token: string) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const payload = await this.jwtService.verifyAsync(token);
+
+      if (payload) return;
+    } catch {
+      throw new UnauthorizedException(AUTH_MESSAGES.TOKEN_INVALID);
+    }
   }
 }
